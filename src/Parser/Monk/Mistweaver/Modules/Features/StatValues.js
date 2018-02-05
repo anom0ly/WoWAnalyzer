@@ -1,11 +1,5 @@
-
-
 import BaseHealerStatValues from 'Parser/Core/Modules/Features/BaseHealerStatValues';
 import STAT from 'Parser/Core/Modules/Features/STAT';
-import Combatants from 'Parser/Core/Modules/Combatants';
-
-import CritEffectBonus from 'Parser/Core/Modules/Helpers/CritEffectBonus';
-import StatTracker from 'Parser/Core/Modules/StatTracker';
 
 import SPELL_INFO from './StatValuesSpellInfo';
 
@@ -14,24 +8,18 @@ import SPELL_INFO from './StatValuesSpellInfo';
  *
  */
 class StatValues extends BaseHealerStatValues {
-  static dependencies = {
-    combatants: Combatants,
-    critEffectBonus: CritEffectBonus,
-    statTracker: StatTracker,
-  };
 
   spellInfo = SPELL_INFO;
 
   _mastery(event, healVal) {
     if (healVal.overheal) {
-      // If a spell overheals, it could not have healed for more. Seeing as Mastery only adds HP on top of the existing heal we can skip it as increasing the power of this heal would only be more overhealing.
+      // If a spell overheals, it could not have healed for more.
       return 0;
     }
 
-    const currMastery = this.statTracker.currentMasteryRating;
-    const healIncreaseFromOneMastery = 1 / currMastery;
-    return healVal.effective * healIncreaseFromOneMastery;
-
+    //mastery % delta has to be applied over the base heal at 100% mastery
+    const baseHeal = healVal.effective / this.statTracker.currentMasteryPercentage;
+    return baseHeal / this.statTracker.masteryRatingPerPercent;
   }
 
   

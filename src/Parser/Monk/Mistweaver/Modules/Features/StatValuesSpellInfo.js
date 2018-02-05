@@ -1,4 +1,4 @@
-import SPELLS from 'common/SPELLS';
+import S from 'common/SPELLS/MONK';
 
 /*
  * Fields:
@@ -15,155 +15,42 @@ import SPELLS from 'common/SPELLS';
 
 // This only works with actual healing events; casts are not recognized.
 
+// "default" behavior (not spammable, not a HOT)
+const def = (changed = {}) => {
+  return {
+      int: true,
+      crit: true,
+      vers: true,
+      mastery: false,        // only gust of mists entries scale with mastery
+      hasteHpm: false,       // true if it is a HOT
+      hasteHpct: false,      // true if it is spammable (HPCT currently not calculated though)
+      ...changed,
+  };
+};
+
 export default {
-  [SPELLS.ENVELOPING_MISTS.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: true,
-    hasteHpct: true,
-    mastery: false, //Procs Gusts
-    vers: true,
-  },
-  [SPELLS.ESSENCE_FONT.id]: {
-    int: true,
-    crit: true,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.ESSENCE_FONT_BUFF.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: true,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.RENEWING_MIST_HEAL.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: true,
-    hasteHpct: false,
-    mastery: false, // Procs Gusts
-    vers: true,
-  },
-  [SPELLS.SHEILUNS_GIFT.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, // Procs Gusts
-    vers: true,
-  },
-  [SPELLS.VIVIFY.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: true,
-    mastery: false, // Procs Gusts
-    vers: true,
-  },
-  [SPELLS.CHI_BURST_HEAL.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false,
-    vers: true,
-  },
-  [SPELLS.GUSTS_OF_MISTS.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: true, // Procs Gusts
-    vers: false,
-  },
-  [SPELLS.WHISPERS_OF_SHAOHAO.id]: {
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false,
-    vers: true,
-  },
-  [SPELLS.CELESTIAL_BREATH.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.SOOTHING_MIST.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: true,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.REFRESHING_JADE_WIND_HEAL.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: true,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.MISTS_OF_SHEILUN.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.REVIVAL.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false,
-    vers: true,
-  },
-  [SPELLS.BLESSINGS_OF_YULON.id]: { 
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.LIFE_COCOON.id]: { 
-    int: true,
-    crit: false,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.CRANE_HEAL.id]: { 
-    int: true,
-    crit: false,
-    hasteHpm: false,
-    hasteHpct: true,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.TRANQUIL_MIST.id]: { // T21 2P HoT
-    int: true,
-    crit: true,
-    hasteHpm: true,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
-  [SPELLS.CHI_BOLT.id]: { // T21 2P HoT
-    int: true,
-    crit: true,
-    hasteHpm: false,
-    hasteHpct: false,
-    mastery: false, 
-    vers: true,
-  },
+  [S.EFFUSE.id] : def({ hasteHpct : true }),
+  [S.ENVELOPING_MISTS.id] : def({ hasteHpm : true, hasteHpct : true }),
+  [S.ESSENCE_FONT.id] : def(),
+  [S.ESSENCE_FONT_BUFF.id] : def({ hasteHpm : true }),
+  [S.LIFE_COCOON.id] : def(),
+  [S.RENEWING_MIST_HEAL.id] : def({ hasteHpm : true }),
+  [S.REVIVAL.id] : def(),
+  [S.SHEILUNS_GIFT.id] : def(),
+  //note: uplifting trance would scale with haste. meh...
+  [S.VIVIFY.id] : def({ hasteHpct : true }),
+  //hpm or hpct? (wouldnt matter much since its free and weak)
+  [S.SOOTHING_MIST.id] : def({ hasteHpct : true }),
+  [S.CHI_BURST_HEAL.id] : def(),
+  [S.REFRESHING_JADE_WIND_HEAL.id] : def({ hasteHpct : true }),
+  //hpm or hpct?
+  [S.CRANE_HEAL.id] : def({ hasteHpct : true }),
+  [S.GUSTS_OF_MISTS.id] : def({ mastery : true }),
+  [S.WHISPERS_OF_SHAOHAO.id] : def(),
+  [S.MISTS_OF_SHEILUN.id] : def(),
+  [S.CELESTIAL_BREATH.id] : def(),
+  [S.BLESSINGS_OF_YULON.id] : def(),
+  [S.SHELTER_OF_RIN_HEAL.id] : def(), //chest legendary
+  [S.TRANQUIL_MIST.id] : def({ hasteHpm : true }), //t21 2p
+  [S.CHI_BOLT.id] : def(),  //t21 4p
 };
