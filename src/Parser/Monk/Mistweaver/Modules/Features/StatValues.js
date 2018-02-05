@@ -17,9 +17,17 @@ class StatValues extends BaseHealerStatValues {
       return 0;
     }
 
-    //mastery % delta has to be applied over the base heal at 100% mastery
-    const baseHeal = healVal.effective / this.statTracker.currentMasteryPercentage;
-    return baseHeal / this.statTracker.masteryRatingPerPercent;
+    // assuming gust heal vs. mastery % are linear and start at 0 ( gust_heal = K * mast_pct )
+    // h2 / h1 = (K * rat + 1.04) / (K * (rat-1) + 1.04 )
+    // solving that for h2 - h1 brings...
+    const h2 = healVal.effective;
+    const k = 1 / this.statTracker.masteryRatingPerPercent;
+    const r = this.statTracker.currentMasteryRating;
+    return h2 * ( 1 - ( ( k*(r-1)+1.04 ) / ( k*r+1.04 ) ) );
+
+    //approach 2: apply mastery % delta over the base heal at 100% mastery
+    //const baseHeal = healVal.effective / this.statTracker.currentMasteryPercentage;
+    //return baseHeal / this.statTracker.masteryRatingPerPercent;
   }
 
   
